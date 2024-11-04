@@ -71,15 +71,14 @@ const Container = styled("div")`
   display: flex;
   flex-direction: row;
   align-items: center;
-  transition: opacity 0.5s linear;
-  opacity: ${(props) => (props.playing ? 1 : 0.3)};
-  &:hover {
-    opacity: 1; /* 鼠標懸停時恢復透明度 */
+  transition: opacity 0.4s linear;
+  &:hover{
+    opacity: 1;
   }
 `;
 
 const Song = styled("h1")`
-  font-size: 30px;
+  font-size: 40px;
   margin: 0 0;
   white-space: nowrap;
 `;
@@ -95,7 +94,7 @@ const Cover = styled("img")`
   border-radius: 10px;
   height: ${size}px;
   width: ${size}px;
-  margin-right: ${size * 0.2}px;
+  margin-right: ${size * 0.15}px;
 `;
 
 const CentralCover = styled("img")`
@@ -104,16 +103,14 @@ const CentralCover = styled("img")`
   left: 50%;
   transform: translate(-50%, -50%);
   border-radius: 10px;
-  height: 400px; /* 可以調整圖片大小 */
-  width: 400px;  /* 可以調整圖片大小 */
-  opacity: 1;
-  z-index: -1;   /* 保證它不會覆蓋其他內容 */
+  height: 400px; 
+  width: 400px;  
   transition: opacity 0.5s linear;
 `;
 
 const Button = styled("div")`
   display: inline-block;
-  padding: 4px 6px;
+  padding: 5px 8.3px;
 
   &:hover svg {
     color: #ccc;
@@ -127,7 +124,7 @@ const Button = styled("div")`
 const Separator = styled("div")`
   background: rgba(255, 255, 255, 0.2);
   border-radius: 0;
-  height: 2px;
+  height: 4px;
   flex: 1;
   margin: 6px 0;
   position: relative;
@@ -139,7 +136,7 @@ const Separator = styled("div")`
     content: "";
     display: block;
     transition: width 1s ease-in-out;
-    border-top: solid 1px rgba(255, 255, 255, 0.5);
+    border-top: solid 4px rgba(255, 255, 255, 0.5);
     width: ${(props) => (props.position ? props.position * 96 + 4 : 100)}%;
   }
 `;
@@ -152,8 +149,8 @@ const FFButton = ({ backwards, dispatch }) => {
       }
     >
       <svg
-        width="30"
-        height="20"
+        width="40"
+        height="30"
         viewBox="0 0 12 8"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -172,8 +169,8 @@ const PlayPauseButton = ({ playing, dispatch }) => {
       onClick={() => commandSpotify(playing ? "pause" : "play", dispatch)}
     >
       <svg
-        width="20"
-        height="20"
+        width="25"
+        height="30"
         viewBox="0 0 8 8"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
@@ -207,14 +204,18 @@ const updateState = (event, previousState) => {
 
 const render = (data) => {
   if (data.error || data.loading) return <div></div>;
-  const { song, artist, album, cover, playing, position, appAvailable } = data;
+  const { song, artist, album, cover, playing, position, appAvailable, hovered } = data;
 
 
 
   return (
     <div>
-      <CentralCover src={cover} style={{ opacity: !appAvailable ? 0 : playing ? 1 : 1, }} />
-      <Container style={{ opacity: !appAvailable ? 0 : playing ? 1 : 0.3 }}>
+      <CentralCover src={cover} style={{ opacity: appAvailable ? 1 : 0 }} />
+      <Container
+        style={{ opacity: !appAvailable ? 0 : playing ? 1 : hovered ? 1 : 0.3 }}
+        onMouseEnter={() => data.hovered = true}
+        onMouseLeave={() => data.hovered = false}
+      >
         <Cover src={cover} size={size} />
         <div>
           <Song>{song}</Song>
